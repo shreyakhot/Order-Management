@@ -39,7 +39,7 @@ class AdminAuthController extends Controller
      * "id": 1,
      *"name": "Admin",
      *"username ": "Admin",
-     * "email": "admin@interpay.com",
+     * "email": "admin@example.com",
      * "phone": "+923001234567",
      * "image": null,
      * "emailVerifiedAt": null,

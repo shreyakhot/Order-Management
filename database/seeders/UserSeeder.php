@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         $admin =User::firstOrCreate([
             'name' => 'Admin',
             'username' => 'Admin',
-            'email' => 'admin@interpay.com',
+            'email' => 'admin@example.com',
             'phone' => '+923001234567',
             'password' => Hash::make('admin'),
         ]);
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
         $customer=User::firstOrCreate([
             'name' => 'User',
             'username' => 'User',
-            'email' => 'user@interpay.com',
+            'email' => 'user@example.com',
             'phone' => '+923001234568',
             'password' => Hash::make('12345678'),
         ]);
