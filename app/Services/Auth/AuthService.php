@@ -8,16 +8,13 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\Log\LogService;
 use App\Traits\ApiResponseHelper;
-use App\Traits\FirebaseHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class AuthService
 {
-    use ApiResponseHelper, FirebaseHelper;
+    use ApiResponseHelper;
     private $request;
     private $logService;
 
@@ -46,36 +43,6 @@ class AuthService
         throw new CustomException('User is not authorized');
     }
 
-    //function for login with token with firebase token
-    public function loginWithToken()
-    {
-        $this->logService->info('Login with token');
-        $keys = $this->getFirebaseKeyIds();
-        $decodedToken = JWT::decode($this->request->token, array_map(function ($key) {
-            return new Key($key, 'RS256');
-        }, $keys));
-
-        if ($decodedToken->iss !== $this->getFirebaseIss()) {
-            return $this->apiResponse(false, 'Invalid Token', [], 401);
-        }
-        $phone = $decodedToken->phone_number;
-        if (empty($phone)) {
-            return $this->apiResponse(false, 'Invalid mobile number in token', [], 401);
-        }
-
-        $user = User::where('phone', $phone)->first();
-        //$user = User::where('phone', $this->request->phone)->first();
-
-        if (!$user || !$user->hasRole('customer')) {
-            throw  new CustomException('User not found');
-        }
-
-        $token = $user->createToken($user->email)->plainTextToken;
-        $tokenObj = ['token' => $token];
-        $data = new UserResource($user);
-        $data['data'] = collect($data)->merge($tokenObj);
-        return $this->apiResponse(true, __('api.read'), $data);
-    }
 
     public function authLogout()
     {

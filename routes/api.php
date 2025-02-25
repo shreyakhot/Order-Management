@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return true;
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/orders', [OrderController::class, 'adminOrders']);
+        Route::put('/admin/orders/{id}', [OrderController::class, 'updateStatus']);
+    });
+});
+
+Route::get('/test-route', function () {
+    return response()->json(['message' => 'API is working']);
 });
